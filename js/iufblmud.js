@@ -60,8 +60,8 @@ function onYouTubeIframeAPIReady() {
 
 window.fbAsyncInit = function () {
     FB.init({
-        appId: '145530318799386',
-        channelUrl: '//iufblmud.apphb.com/channel.html',
+        appId: '355442691203625',
+        channelUrl: '//woli.github.com/iufblmud/channel.html',
         status: true,
         cookie: true,
         xfbml: true
