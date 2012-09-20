@@ -12,7 +12,60 @@
     <div id="fb-root"></div>
     <div id="main">
         <div id="options">
-            <p><small><a id="play-mode" href="#">auto-advance video: no</a> | <a id="sort-dir" href="#">invert sort</a></small></p>
+            <p><small><a id="options-open" href="#myModal" role="button" data-toggle="modal">options</a></small></p>
+        </div>
+        <div class="modal hide" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <h3 id="myModalLabel">Options</h3>
+            </div>
+            <div class="modal-body">
+                <div id="sort-by-group" class="control-group">
+                    <div class="controls">
+                        <label><strong>Sort by</strong></label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortByRadios" value="time" checked>
+                          Time
+                        </label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortByRadios" value="author">
+                          Author
+                        </label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortByRadios" value="likes">
+                          Likes
+                        </label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortByRadios" value="comments">
+                          Comments
+                        </label>
+                    </div>
+                </div>
+                <div id="sort-dir-group" class="control-group">
+                    <div class="controls">
+                        <label><strong>Sort direction</strong></label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortDirRadios" value="asc">
+                          Ascending
+                        </label>
+                        <label class="radio inline">
+                          <input type="radio" name="sortDirRadios" value="desc" checked>
+                          Descending
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label><strong>Video</strong></label>
+                        <label class="checkbox">
+                          <input id="play-mode" type="checkbox" value="">
+                          Auto-advance
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
         </div>
         <div class="navbar">
             <div class="navbar-inner">

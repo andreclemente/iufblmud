@@ -6,18 +6,22 @@ var feed = new Feed();
 var player = null;
 
 $(document).ready(function () {
-    $('#play-mode').click(function () {
-        playlist.auto_advance = !playlist.auto_advance;
-        $(this).text('auto-advance video: ' + (playlist.auto_advance ? 'yes' : 'no'));
-    });
-    $('#sort-dir').click(function () {
-        feed.sort_dir = feed.sort_dir == 'asc' ? 'desc' : 'asc';
-        feed.sort();
-        feed.render();
-        feed.events();
-        playlist.curr_post = null;
-    });
+    $('input').attr('autocomplete', 'off');
 
+    $('#myModal').on('hidden', function () {
+        playlist.auto_advance = $('#play-mode').prop('checked');
+        var sort_by = $('#sort-by-group input:radio:checked').val();
+        var sort_dir = $('#sort-dir-group input:radio:checked').val();
+        if (sort_by != feed.sort_by || sort_dir != feed.sort_dir) {
+            feed.sort_by = sort_by;
+            feed.sort_dir = sort_dir;
+            feed.sort();
+            feed.render();
+            feed.events();
+            playlist.curr_post = null;
+        }
+    });
+    
     $('#date-picker').val(date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
     $('#date-picker').datepicker({ format: 'd-m-yyyy' })
         .on('changeDate', function (e) {
@@ -131,6 +135,7 @@ Playlist.prototype.onPlayerStateChange = function (event) {
 
 function Feed() {
     this.accessToken = null;
+    this.sort_by = 'time';
     this.sort_dir = 'desc';
     this.posts = [];
 }
@@ -165,13 +170,36 @@ Feed.prototype.refresh = function () {
 };
 
 Feed.prototype.sort = function () {
-    this.posts.sort(function (x, y) {
-        if (feed.sort_dir == 'desc') {
-            return y.created_time - x.created_time;
+    switch(feed.sort_by ) {
+    case 'time':
+        if (feed.sort_dir == 'asc') {
+            this.posts.sort(function (x, y) { return x.created_time - y.created_time; });
         } else {
-            return x.created_time - y.created_time;
+            this.posts.sort(function (x, y) { return y.created_time - x.created_time; });
         }
-    });
+      break;
+    case 'author':
+        if (feed.sort_dir == 'asc') {
+            this.posts.sort(function (x, y) { return x.from.name.localeCompare(y.from.name); });
+        } else {
+            this.posts.sort(function (x, y) { return y.from.name.localeCompare(x.from.name); });
+        }
+      break;
+    case 'likes':
+        if (feed.sort_dir == 'asc') {
+            this.posts.sort(function (x, y) { return x.likes - y.likes; });
+        } else {
+            this.posts.sort(function (x, y) { return y.likes - x.likes; });
+        }
+      break;
+    case 'comments':
+        if (feed.sort_dir == 'asc') {
+            this.posts.sort(function (x, y) { return x.comments - y.comments; });
+        } else {
+            this.posts.sort(function (x, y) { return y.comments - x.comments; });
+        }
+      break;
+    }
 };
 
 Feed.prototype.render = function () {
