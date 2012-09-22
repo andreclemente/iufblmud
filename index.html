@@ -2,105 +2,158 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IUFBLMUD</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/datepicker.css" />
     <link rel="stylesheet" href="css/iufblmud.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
 </head>
 <body>
     <div id="fb-root"></div>
-    <div id="main">
-        <div id="options">
-            <p><small><a id="options-open" href="#myModal" role="button" data-toggle="modal">options</a></small></p>
-        </div>
-        <div class="modal hide" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <h3 id="myModalLabel">Options</h3>
-            </div>
-            <div class="modal-body">
-                <div id="sort-by-group" class="control-group">
-                    <div class="controls">
-                        <label><strong>Sort by</strong></label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortByRadios" value="time" checked>
-                          Time
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortByRadios" value="author">
-                          Author
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortByRadios" value="likes">
-                          Likes
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortByRadios" value="comments">
-                          Comments
-                        </label>
-                    </div>
-                </div>
-                <div id="sort-dir-group" class="control-group">
-                    <div class="controls">
-                        <label><strong>Sort direction</strong></label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortDirRadios" value="asc">
-                          Ascending
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" name="sortDirRadios" value="desc" checked>
-                          Descending
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <label><strong>Video</strong></label>
-                        <label class="checkbox">
-                          <input id="play-mode" type="checkbox" value="">
-                          Auto-advance
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
-            </div>
-        </div>
-        <div class="navbar">
-            <div class="navbar-inner">
-                <form class="navbar-form" style="float:left;">
-                    <input id="date-picker" type="text" class="input-small">
-                </form>
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <strong id="fb-group">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias</strong>
-                            <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a id="fb-group-1" href="#">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias</a></li>
-                            <li><a id="fb-group-2" href="#">Tribo Cin&eacute;fila das Tapas &amp; Vinho Tinto</a></li>
-                            <li><a id="fb-group-3" href="#">30 dias, 30 m&uacute;sicas</a></li>
-                            <li><a id="fb-group-4" href="#">Discos para 1 Ilha Deserta</a></li>
-                        </ul>
-                    </li>
+
+    <div class="container">
+        <div id="header-desktop" class="row visible-desktop">
+            <div class="span7 header-group dropdown">
+                <a id="lbl-fb-group" class="btn dropdown-toggle btn-fb-group" data-toggle="dropdown" role="button" href="#">
+                    Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="lbl-fb-group">
+                    <li><a id="opt-fb-group-1" tab-index="-1" href="#">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias</a></li>
+                    <li><a id="opt-fb-group-2" tab-index="-1" href="#">Tribo Cin&eacute;fila das Tapas &amp; Vinho Tinto</a></li>
+                    <li><a id="opt-fb-group-3" tab-index="-1" href="#">30 dias, 30 m&uacute;sicas</a></li>
+                    <li><a id="opt-fb-group-4" tab-index="-1" href="#">Discos para 1 Ilha Deserta</a></li>
                 </ul>
-                <form class="navbar-form pull-right">
-                    <input id="search-box" type="text" class="search-query input-medium" placeholder="Search">
-                </form>
+            </div>
+            <div class="btn-group span2 header-options">
+                <a class="btn btn-date-picker" href="#" data-date-format="d-m-yyyy" data-date="1-1-1970"><i class="icon-calendar"></i> 1-1-1970</a>
+                <a class="btn" href="#options" role="button" data-toggle="modal"><i class="icon-wrench"></i></a>
+            </div>
+            <div class="span3 header-search">
+                <input id="search-desktop" class="input-medium" type="text" placeholder="Search">
             </div>
         </div>
-        <div id="loading">
-            <strong>Loading... please wait</strong>
+
+        <div id="header-tablet" class="row visible-tablet">
+            <div class="span6 header-group">
+                <a class="btn btn-fb-group" href="#fb-group" role="button" data-toggle="modal">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias&nbsp;&nbsp;<b class="caret"></b></a>
+            </div>
+            <div class="btn-group span3 header-options">
+                <a class="btn btn-date-picker" href="#" data-date-format="d-m-yyyy" data-date="1-1-1970"><i class="icon-calendar"></i> 1-1-1970</a>
+                <a class="btn" href="#options" role="button" data-toggle="modal"><i class="icon-wrench"></i></a>
+            </div>
+            <div class="span3 header-search">
+                <input id="search-tablet" class="input-medium" type="text" placeholder="Search">
+            </div>
         </div>
-        <div id="posts"></div>
-        <div id="player-hidden" style="display:none">
-            <iframe id="player" width="640" height="360" src="http://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
+
+        <div id="header-phone" class="row visible-phone">
+            <div class="span6 header-group">
+                <a class="btn btn-fb-group" href="#fb-group" role="button" data-toggle="modal">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias&nbsp;&nbsp;<span class="caret"></span></a>
+            </div>
+            <div class="btn-group span3 header-options">
+                <a class="btn btn-date-picker" href="#" data-date-format="d-m-yyyy" data-date="1-1-1970"><i class="icon-calendar"></i> 1-1-1970</a>
+                <a class="btn" href="#options" role="button" data-toggle="modal"><i class="icon-wrench"></i></a>
+            </div>
+            <div class="span3 header-search">
+                <input id="search-phone" class="input-big" type="text" placeholder="Search">
+            </div>
         </div>
-        <div id="footer">
-            <p><small>Source code available at <a href="http://github.com/woli/iufblmud">http://github.com/woli/iufblmud</a></small></p>
+
+        <div class="row">
+            <div id="loading" class="span12 hide">
+                <p>Loading... please wait</p>
+            </div>
         </div>
+
+        <div class="row">
+            <div id="posts" class="span12"></div>
+        </div>
+
+        <div class="row">
+            <div id="footer" class="span12">
+                <p>Source code available at</p>
+                <p><a href="http://github.com/woli/iufblmud">http://github.com/woli/iufblmud</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="fb-group" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="fb-group-label" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="fb-group-label">Group</h3>
+        </div>
+        <div class="modal-body">
+            <button id="btn-fb-group-1" class="btn btn-block btn-primary" type="button">Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias</button>
+            <button id="btn-fb-group-2" class="btn btn-block" type="button">Tribo Cin&eacute;fila das Tapas &amp; Vinho Tinto</button>
+            <button id="btn-fb-group-3" class="btn btn-block" type="button">30 dias, 30 m&uacute;sicas</button>
+            <button id="btn-fb-group-4" class="btn btn-block" type="button">Discos para 1 Ilha Deserta</button>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+
+    <div id="options" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="options-label" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="options-label">Options</h3>
+        </div>
+        <div class="modal-body">
+            <div id="sort-by-group" class="control-group">
+                <div class="controls">
+                    <label class="section-header">Sort by</label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortByRadios" value="time" checked>
+                      Time
+                    </label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortByRadios" value="author">
+                      Author
+                    </label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortByRadios" value="post">
+                      Post
+                    </label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortByRadios" value="likes">
+                      Likes
+                    </label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortByRadios" value="comments">
+                      Comments
+                    </label>
+                </div>
+            </div>
+            <div id="sort-dir-group" class="control-group">
+                <div class="controls">
+                    <label class="section-header">Sort direction</label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortDirRadios" value="asc">
+                      Ascending
+                    </label>
+                    <label class="radio inline">
+                      <input type="radio" name="sortDirRadios" value="desc" checked>
+                      Descending
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="section-header">Video</label>
+                    <label class="checkbox">
+                      <input id="play-mode" type="checkbox" value="">
+                      Auto-advance
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+
+    <div id="player-hidden" class="hide">
+        <iframe id="player" width="640" height="360" src="http://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
     </div>
 
     <script src="js/jquery-1.7.1.min.js"></script>

@@ -1,6 +1,7 @@
 ﻿var gid = '228544121320';
 var now = new Date();
 var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+var search_text = '';
 var playlist = new Playlist();
 var feed = new Feed();
 var player = null;
@@ -8,7 +9,39 @@ var player = null;
 $(document).ready(function () {
     $('input').attr('autocomplete', 'off');
 
-    $('#myModal').on('hidden', function () {
+    $('#opt-fb-group-1').click(function () {
+        changeGroup($("#btn-fb-group-1"), '228544121320', 'Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias');
+    });
+    $('#opt-fb-group-2').click(function () {
+        changeGroup($("#btn-fb-group-2"), '123201917718018', 'Tribo Cin&eacute;fila das Tapas &amp; Vinho Tinto');
+    });
+    $('#opt-fb-group-3').click(function () {
+        changeGroup($("#btn-fb-group-3"), '181935148518318', '30 dias, 30 m&uacute;sicas');
+    });
+    $('#opt-fb-group-4').click(function () {
+        changeGroup($("#btn-fb-group-4"), '117052185076587', 'Discos para 1 Ilha Deserta');
+    });
+    $('#btn-fb-group-1').click(function () {
+        changeGroup($(this), '228544121320', 'Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias');
+    });
+    $('#btn-fb-group-2').click(function () {
+        changeGroup($(this), '123201917718018', 'Tribo Cin&eacute;fila das Tapas &amp; Vinho Tinto');
+    });
+    $('#btn-fb-group-3').click(function () {
+        changeGroup($(this), '181935148518318', '30 dias, 30 m&uacute;sicas');
+    });
+    $('#btn-fb-group-4').click(function () {
+        changeGroup($(this), '117052185076587', 'Discos para 1 Ilha Deserta');
+    });
+
+    var data_date = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+    $('.btn-date-picker').attr('data-date', data_date);
+    $('.btn-date-picker').html('<i class="icon-calendar"></i> ' + data_date);
+    $('.btn-date-picker').datepicker().on('changeDate', function (e) {
+        changeDate(e.date);
+    });
+
+    $('#options').on('hidden', function () {
         playlist.auto_advance = $('#play-mode').prop('checked');
         var sort_by = $('#sort-by-group input:radio:checked').val();
         var sort_dir = $('#sort-dir-group input:radio:checked').val();
@@ -21,37 +54,54 @@ $(document).ready(function () {
             playlist.curr_post = null;
         }
     });
-    
-    $('#date-picker').val(date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
-    $('#date-picker').datepicker({ format: 'd-m-yyyy' })
-        .on('changeDate', function (e) {
-            date = e.date;
-            feed.refresh(); 
-        });
 
-    $('#fb-group-1').click(function () {
-        $('#fb-group').text('Igreja Universal dos Fazedores de Bonitas Listas Musicais dos Últimos Dias');
-        gid = '228544121320';
-        feed.refresh();
+    $('#search-desktop').keyup(function () {
+        changeSearch($(this).val(), $('#search-tablet'), $('#search-phone'));
     });
-    $('#fb-group-2').click(function () {
-        $('#fb-group').text('Tribo Cinéfila das Tapas & Vinho Tinto');
-        gid = '123201917718018';
-        feed.refresh();
+    $('#search-tablet').keyup(function () {
+        changeSearch($(this).val(), $('#search-desktop'), $('#search-phone'));
     });
-    $('#fb-group-3').click(function () {
-        $('#fb-group').text('30 dias, 30 músicas');
-        gid = '181935148518318';
-        feed.refresh();
+    $('#search-phone').keyup(function () {
+        changeSearch($(this).val(), $('#search-desktop'), $('#search-tablet'));
     });
-    $('#fb-group-4').click(function () {
-        $('#fb-group').text('Discos para 1 Ilha Deserta');
-        gid = '117052185076587';
-        feed.refresh();
-    });
-
-    $('#search-box').keyup(function () { feed.render(); });
 });
+
+function changeGroup(btn, new_gid, name) {
+    $('#fb-group').modal('hide');
+    if (new_gid == gid) {
+        return;
+    }
+
+    $('.btn-fb-group').html(name + '  <span class="caret"></span>');
+
+    gid = new_gid;
+    feed.refresh();
+
+    $("#btn-fb-group-1").removeClass("btn-primary");
+    $("#btn-fb-group-2").removeClass("btn-primary");
+    $("#btn-fb-group-3").removeClass("btn-primary");
+    $("#btn-fb-group-4").removeClass("btn-primary");
+    btn.addClass("btn-primary");
+}
+
+function changeDate(new_date) {
+    $('.btn-date-picker').datepicker('hide');
+    if (date == new_date) {
+        return;
+    }
+
+    $('.btn-date-picker').html('<i class="icon-calendar"></i> ' + new_date.getDate() + '-' + (new_date.getMonth() + 1) + '-' + new_date.getFullYear());
+
+    date = new_date;
+    feed.refresh();
+}
+
+function changeSearch(text, dst1, dst2) {
+    search_text = text.toLowerCase();
+    dst1.val(text);
+    dst2.val(text);
+    feed.render();
+}
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -180,9 +230,36 @@ Feed.prototype.sort = function () {
       break;
     case 'author':
         if (feed.sort_dir == 'asc') {
-            this.posts.sort(function (x, y) { return x.from.name.localeCompare(y.from.name); });
+            this.posts.sort(function (x, y) { return x.from.name.toLowerCase().localeCompare(y.from.name.toLowerCase()); });
         } else {
-            this.posts.sort(function (x, y) { return y.from.name.localeCompare(x.from.name); });
+            this.posts.sort(function (x, y) { return y.from.name.toLowerCase().localeCompare(x.from.name.toLowerCase()); });
+        }
+      break;
+    case 'post':
+        if (feed.sort_dir == 'asc') {
+            this.posts.sort(function (x, y) {
+                var x = x.name;
+                var y = y.name;
+                if (x == null) {
+                    x = 'post';
+                }
+                if (y == null) {
+                    y = 'post';
+                }
+                return x.toLowerCase().localeCompare(y.toLowerCase());
+            });
+        } else {
+            this.posts.sort(function (x, y) {
+                var x = x.name;
+                var y = y.name;
+                if (x == null) {
+                    x = 'post';
+                }
+                if (y == null) {
+                    y = 'post';
+                }
+                return y.toLowerCase().localeCompare(x.toLowerCase());
+            });
         }
       break;
     case 'likes':
@@ -203,20 +280,21 @@ Feed.prototype.sort = function () {
 };
 
 Feed.prototype.render = function () {
-    var text = $('#search-box').val().toLowerCase();
     var container = $('#posts');
 
     container.empty();
     var content = '';
     $.each(this.posts,
         function (i, post) {
-            if (text == null ||
-                text == '' ||
-                (post.from != null && post.from.name != null && post.from.name.toLowerCase().indexOf(text) != -1) ||
-                (post.message != null && post.message.toLowerCase().indexOf(text) != -1) ||
-                (post.name != null && post.name.toLowerCase().indexOf(text) != -1)) {
+            if (search_text == null ||
+                search_text == '' ||
+                (post.from != null && post.from.name != null && post.from.name.toLowerCase().indexOf(search_text) != -1) ||
+                (post.message != null && post.message.toLowerCase().indexOf(search_text) != -1) ||
+                (post.name != null && post.name.toLowerCase().indexOf(search_text) != -1)) {
 
-                content += post.toHtml();
+                if (post.created_time > date) {
+                    content += post.toHtml();
+                }
             }
         }
     );
