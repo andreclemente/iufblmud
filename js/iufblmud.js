@@ -51,7 +51,6 @@ $(document).ready(function () {
             feed.sort();
             feed.render();
             feed.events();
-            playlist.curr_post = null;
         }
     });
 
@@ -101,6 +100,7 @@ function changeSearch(text, dst1, dst2) {
     dst1.val(text);
     dst2.val(text);
     feed.render();
+    feed.events();
 }
 
 function onYouTubeIframeAPIReady() {
@@ -213,7 +213,6 @@ Feed.prototype.refresh = function () {
         feed.sort();
         feed.render();
         feed.events();
-        playlist.curr_post = null;
 
         $('#loading').hide();
     });
@@ -280,8 +279,11 @@ Feed.prototype.sort = function () {
 };
 
 Feed.prototype.render = function () {
-    var container = $('#posts');
+    player.stopVideo();
+    playlist.curr_post = null;
+    $('#player').appendTo('#player-hidden');
 
+    var container = $('#posts');
     container.empty();
     var content = '';
     $.each(this.posts,
