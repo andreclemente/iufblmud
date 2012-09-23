@@ -191,6 +191,9 @@ function Feed() {
 }
 
 Feed.prototype.refresh = function () {
+    playlist.curr_post = null;
+    $('#player').appendTo('#player-hidden');
+
     feed.posts = [];
     $('#posts').empty();
     $('#loading').show();
@@ -279,7 +282,6 @@ Feed.prototype.sort = function () {
 };
 
 Feed.prototype.render = function () {
-    player.stopVideo();
     playlist.curr_post = null;
     $('#player').appendTo('#player-hidden');
 
