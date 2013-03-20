@@ -22,7 +22,7 @@ $(document).ready(function () {
         changeGroup($("#btn-fb-group-4"), '117052185076587', 'Discos para 1 Ilha Deserta');
     });
     $('#opt-fb-group-5').click(function () {
-        changeGroup($("#btn-fb-group-5"), 'clubedeblues', 'Clube de Blues');
+        changeGroup($("#btn-fb-group-5"), '174536416007544', 'Clube de Blues');
     });
     $('#btn-fb-group-1').click(function () {
         changeGroup($(this), '228544121320', 'Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias');
@@ -37,7 +37,7 @@ $(document).ready(function () {
         changeGroup($(this), '117052185076587', 'Discos para 1 Ilha Deserta');
     });
     $('#btn-fb-group-5').click(function () {
-        changeGroup($(this), 'clubedeblues', 'Clube de Blues');
+        changeGroup($(this), '174536416007544', 'Clube de Blues');
     });
 
     var data_date = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
