@@ -21,6 +21,9 @@ $(document).ready(function () {
     $('#opt-fb-group-4').click(function () {
         changeGroup($("#btn-fb-group-4"), '117052185076587', 'Discos para 1 Ilha Deserta');
     });
+    $('#opt-fb-group-5').click(function () {
+        changeGroup($("#btn-fb-group-5"), 'clubedeblues', 'Clube de Blues');
+    });
     $('#btn-fb-group-1').click(function () {
         changeGroup($(this), '228544121320', 'Igreja Universal dos Fazedores de Bonitas Listas Musicais dos &Uacute;ltimos Dias');
     });
@@ -32,6 +35,9 @@ $(document).ready(function () {
     });
     $('#btn-fb-group-4').click(function () {
         changeGroup($(this), '117052185076587', 'Discos para 1 Ilha Deserta');
+    });
+    $('#btn-fb-group-5').click(function () {
+        changeGroup($(this), 'clubedeblues', 'Clube de Blues');
     });
 
     var data_date = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
@@ -80,6 +86,7 @@ function changeGroup(btn, new_gid, name) {
     $("#btn-fb-group-2").removeClass("btn-primary");
     $("#btn-fb-group-3").removeClass("btn-primary");
     $("#btn-fb-group-4").removeClass("btn-primary");
+    $("#btn-fb-group-5").removeClass("btn-primary");
     btn.addClass("btn-primary");
 }
 
@@ -198,7 +205,7 @@ Feed.prototype.refresh = function () {
     $('#posts').empty();
     $('#loading').show();
 
-    FB.api('/'+ gid +'/feed', { 
+    FB.api('/'+ gid +'/feed', {
         access_token: feed.accessToken,
         limit: 1000,
         since: date.valueOf()/1000,
