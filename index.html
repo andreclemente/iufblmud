@@ -116,14 +116,6 @@
                       <input type="radio" name="sortByRadios" value="post">
                       Post
                     </label>
-                    <label class="radio inline">
-                      <input type="radio" name="sortByRadios" value="likes">
-                      Likes
-                    </label>
-                    <label class="radio inline">
-                      <input type="radio" name="sortByRadios" value="comments">
-                      Comments
-                    </label>
                 </div>
             </div>
             <div id="sort-dir-group" class="control-group">
@@ -139,23 +131,10 @@
                     </label>
                 </div>
             </div>
-            <div class="control-group">
-                <div class="controls">
-                    <label class="section-header">Video</label>
-                    <label class="checkbox">
-                      <input id="play-mode" type="checkbox" value="">
-                      Auto-advance
-                    </label>
-                </div>
-            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
         </div>
-    </div>
-
-    <div id="player-hidden" class="hide">
-        <iframe id="player" width="640" height="360" src="http://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
     </div>
 
     <script src="js/jquery-1.7.1.min.js"></script>
@@ -164,19 +143,13 @@
     <script src="js/moment.min.js"></script>
     <script src="js/iufblmud.js"></script>
     <script>
-        var tag = document.createElement('script');
-        tag.src = "//www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    </script>
-    <script>
-        (function (d) {
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) { return; }
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "http://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
 </body>
 </html>

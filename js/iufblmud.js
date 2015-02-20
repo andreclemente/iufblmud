@@ -1,10 +1,12 @@
 ﻿var gid = '228544121320';
+
 var now = new Date();
-var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+var since = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+var until = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+until.setDate(until.getDate() + 1);
+
 var search_text = '';
-var playlist = new Playlist();
 var feed = new Feed();
-var player = null;
 
 $(document).ready(function () {
     $('input').attr('autocomplete', 'off');
@@ -40,7 +42,7 @@ $(document).ready(function () {
         changeGroup($(this), '174536416007544', 'Clube de Blues');
     });
 
-    var data_date = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+    var data_date = since.getDate() + '-' + (since.getMonth() + 1) + '-' + since.getFullYear();
     $('.btn-date-picker').attr('data-date', data_date);
     $('.btn-date-picker').html('<i class="icon-calendar"></i> ' + data_date);
     $('.btn-date-picker').datepicker().on('changeDate', function (e) {
@@ -48,7 +50,6 @@ $(document).ready(function () {
     });
 
     $('#options').on('hidden', function () {
-        playlist.auto_advance = $('#play-mode').prop('checked');
         var sort_by = $('#sort-by-group input:radio:checked').val();
         var sort_dir = $('#sort-dir-group input:radio:checked').val();
         if (sort_by != feed.sort_by || sort_dir != feed.sort_dir) {
@@ -56,7 +57,6 @@ $(document).ready(function () {
             feed.sort_dir = sort_dir;
             feed.sort();
             feed.render();
-            feed.events();
         }
     });
 
@@ -92,13 +92,16 @@ function changeGroup(btn, new_gid, name) {
 
 function changeDate(new_date) {
     $('.btn-date-picker').datepicker('hide');
-    if (date == new_date) {
+    if (since == new_date) {
         return;
     }
 
     $('.btn-date-picker').html('<i class="icon-calendar"></i> ' + new_date.getDate() + '-' + (new_date.getMonth() + 1) + '-' + new_date.getFullYear());
 
-    date = new_date;
+    since = new_date;
+    until = new Date(new_date.getFullYear(), new_date.getMonth(), new_date.getDate());
+    until.setDate(until.getDate() + 1);
+
     feed.refresh();
 }
 
@@ -107,22 +110,13 @@ function changeSearch(text, dst1, dst2) {
     dst1.val(text);
     dst2.val(text);
     feed.render();
-    feed.events();
-}
-
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        events: {
-            'onReady': playlist.onPlayerReady,
-            'onStateChange': playlist.onPlayerStateChange
-        }
-    });
 }
 
 window.fbAsyncInit = function () {
     FB.init({
         appId: '145530318799386',
         channelUrl: '//woli.github.com/iufblmud/channel.html',
+        version: 'v2.2',
         status: true,
         cookie: true,
         xfbml: true
@@ -144,52 +138,6 @@ window.fbAsyncInit = function () {
     });
 };
 
-function Playlist() {
-    this.auto_advance = false;
-    this.curr_post = null;
-}
-
-Playlist.prototype.onPlayerReady = function (event) {
-    if (playlist.curr_post == null || playlist.curr_post.link == null) {
-        return;
-    }
-
-    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]{11,11}).*/;
-    match = playlist.curr_post.link.match(regExp);
-    if (match && match.length >= 2) {
-        player.cueVideoById(match[2]);
-        event.target.playVideo();
-    }
-}
-
-Playlist.prototype.onPlayerStateChange = function (event) {
-    var curr_post = playlist.curr_post;
-    if (event.data != YT.PlayerState.ENDED || curr_post == null || !playlist.auto_advance) {
-        return;
-    }
-
-    $('#player-container-' + curr_post.id).collapse('hide');
-
-    var curr_index = -1;
-    for (i = 0; i < feed.posts.length; i++) {
-        if (curr_post == feed.posts[i]) {
-            curr_index = i;
-            break;
-        }
-    }
-
-    if (curr_index == -1 || curr_index == feed.posts.length - 1) {
-        return;
-    }
-
-    for (i = curr_index + 1; i < feed.posts.length; i++) {
-        if (feed.posts[i].link != null && feed.posts[i].link.indexOf('youtu') != -1) {
-            $('#player-container-' + feed.posts[i].id).collapse('show');
-            break;
-        }
-    }
-}
-
 function Feed() {
     this.accessToken = null;
     this.sort_by = 'time';
@@ -198,38 +146,49 @@ function Feed() {
 }
 
 Feed.prototype.refresh = function () {
-    playlist.curr_post = null;
-    $('#player').appendTo('#player-hidden');
-
     feed.posts = [];
     $('#posts').empty();
     $('#loading').show();
 
     FB.api('/'+ gid +'/feed', {
         access_token: feed.accessToken,
-        limit: 1000,
-        since: date.valueOf()/1000,
-        until: (date.valueOf() + 86400000)/1000
-    }, function (response) {
-        if (response.data == null) {
-            return;
-        }
-
-        $.each(response.data, function (i, v) {
-            feed.posts[i] = new Post();
-            feed.posts[i].init(v);
-        });
-
-        feed.sort();
-        feed.render();
-        feed.events();
-
-        $('#loading').hide();
-    });
+        until: until.valueOf()/1000
+    }, responseFn);
 };
 
+function responseFn(response) {
+    if (response.data == null) {
+        return;
+    }
+
+    var done = false;
+    var j = feed.posts.length;
+    $.each(response.data, function (i, v) {
+        var created_time = moment(v.created_time);
+        if (created_time.isBefore(since)) {
+            done = true;
+            return;
+        }
+        feed.posts[j] = new Post();
+        feed.posts[j].init(v);
+        j++;
+    });
+
+    if (done) {
+        feed.sort();
+        feed.render();
+
+        $('#loading').hide();
+        return;
+    }
+
+    if (response.paging.next != "undefined"){
+        FB.api(response.paging.next, responseFn);
+    }
+}
+
 Feed.prototype.sort = function () {
-    switch(feed.sort_by ) {
+    switch(feed.sort_by) {
     case 'time':
         if (feed.sort_dir == 'asc') {
             this.posts.sort(function (x, y) { return x.created_time - y.created_time; });
@@ -271,27 +230,10 @@ Feed.prototype.sort = function () {
             });
         }
       break;
-    case 'likes':
-        if (feed.sort_dir == 'asc') {
-            this.posts.sort(function (x, y) { return x.likes - y.likes; });
-        } else {
-            this.posts.sort(function (x, y) { return y.likes - x.likes; });
-        }
-      break;
-    case 'comments':
-        if (feed.sort_dir == 'asc') {
-            this.posts.sort(function (x, y) { return x.comments - y.comments; });
-        } else {
-            this.posts.sort(function (x, y) { return y.comments - x.comments; });
-        }
-      break;
     }
 };
 
 Feed.prototype.render = function () {
-    playlist.curr_post = null;
-    $('#player').appendTo('#player-hidden');
-
     var container = $('#posts');
     container.empty();
     var content = '';
@@ -303,7 +245,7 @@ Feed.prototype.render = function () {
                 (post.message != null && post.message.toLowerCase().indexOf(search_text) != -1) ||
                 (post.name != null && post.name.toLowerCase().indexOf(search_text) != -1)) {
 
-                if (post.created_time > date) {
+                if (post.created_time > since) {
                     content += post.toHtml();
                 }
             }
@@ -312,50 +254,12 @@ Feed.prototype.render = function () {
     container.html(content);
 };
 
-Feed.prototype.events = function () {
-    $.each(this.posts, function (i, post) {
-        if (post.link == null) {
-            return;
-        }
-
-        var panel = $('#player-container-' + post.id);
-        var anchor = $('#player-anchor-' + post.id);
-
-        panel.on('show', function () {
-            anchor.html('Hide Video');
-
-            if (playlist.curr_post != null) {
-                $('#player-container-' + playlist.curr_post.id).collapse('hide');
-            }
-
-            playlist.curr_post = post;
-            $('#player').appendTo('#player-container-' + post.id);
-        });
-
-        panel.on('hide', function () {
-            anchor.html('View Video');
-
-            player.stopVideo();
-            playlist.curr_post = null;
-            $('#player').appendTo('#player-hidden');
-        });
-    });
-
-    $(".player-anchor").hover(function () {
-        $(this).css("cursor", "pointer");
-    }, function () {
-        $(this).css("cursor", "default");
-    });
-};
-
 function Post() {
     this.id = null;
     this.from = null;
     this.message = null;
     this.name = null;
     this.link = null;
-    this.likes = 0;
-    this.comments = 0;
     this.created_time = null;
 }
 
@@ -364,8 +268,6 @@ Post.prototype.init = function (data) {
     this.message = data.message != undefined ? data.message : null;
     this.name = data.name != undefined ? data.name : null;
     this.created_time = data.created_time != undefined ? moment(data.created_time) : null;
-    this.likes = (data.likes != undefined && data.likes.count != undefined) ? data.likes.count : 0;
-    this.comments = (data.comments != undefined && data.comments.count != undefined) ? data.comments.count : 0;
 
     if (data.from != undefined) {
         this.from = new User();
@@ -380,15 +282,6 @@ Post.prototype.init = function (data) {
 };
 
 Post.prototype.toHtml = function () {
-    var v = ''
-    if (this.link != null && this.link.indexOf("youtu") == -1) {
-        v = '<i class="icon-play-circle"></i>&nbsp;' +
-            '<a class="player-anchor" href="' + this.link + '">Link</a>';
-    } else if (this.link != null) {
-        v = '<i class="icon-play-circle"></i>&nbsp;' +
-            '<a id="player-anchor-' + this.id + '" class="player-anchor" data-toggle="collapse" data-target="#player-container-' + this.id + '">View video</a>'
-    }
-
     var res =
         '<div class="post">' +
             '<a href="http://www.facebook.com/profile.php?id=' + this.from.id + '">' +
@@ -403,14 +296,6 @@ Post.prototype.toHtml = function () {
                 '<p class="post-name">' +
                     '<a href="https://www.facebook.com/' + this.id.replace("_", "/posts/") + '">' + (this.name == null ? 'Post' : this.name) + '</a>' +
                 '</p>' +
-                '<p class="post-footer">' +
-                    '<small>' +
-                        '<i class="icon-thumbs-up"></i> ' + this.likes + '&nbsp;&nbsp;&nbsp;' +
-                        '<i class="icon-comment"></i> ' + this.comments + '&nbsp;&nbsp;&nbsp;' +
-                        v +
-                    '</small>' +
-                '</p>' +
-                '<div id="player-container-' + this.id + '" class="collapse">&nbsp;</div>' +
             '</div>' +
         '</div>';
 
