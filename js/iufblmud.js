@@ -152,6 +152,7 @@ Feed.prototype.refresh = function () {
 
     FB.api('/'+ gid +'/feed', {
         access_token: feed.accessToken,
+        fields: 'id,from,message,name,link,created_time'
         until: until.valueOf()/1000
     }, responseFn);
 };
