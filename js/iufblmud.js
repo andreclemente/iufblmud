@@ -161,20 +161,17 @@ function responseFn(response) {
         return;
     }
 
-    var done = false;
     var j = feed.posts.length;
+    var k = j;
     $.each(response.data, function (i, v) {
-        var created_time = moment(v.created_time);
-        if (created_time.isBefore(since)) {
-            done = true;
-            return;
+        if (moment(v.created_time).isAfter(since)) {
+            feed.posts[j] = new Post();
+            feed.posts[j].init(v);
+            j++;
         }
-        feed.posts[j] = new Post();
-        feed.posts[j].init(v);
-        j++;
     });
 
-    if (!done && response.paging != "undefined" && response.paging.next != "undefined"){
+    if (j > k && response.paging != "undefined" && response.paging.next != "undefined"){
         FB.api(response.paging.next, responseFn);
     } else {
         feed.sort();
