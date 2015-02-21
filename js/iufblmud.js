@@ -133,7 +133,7 @@ window.fbAsyncInit = function () {
             //         feed.refresh();
             //     }
             // }, { scope: 'read_stream' });
-            window.location = "https://www.facebook.com/dialog/oauth/?client_id=145530318799386&redirect_uri=http://woli.github.com/iufblmud/index.html&scope=read_stream";
+            window.location = "https://www.facebook.com/dialog/oauth/?client_id=145530318799386&redirect_uri=http://woli.github.com/iufblmud/index.html&scope=user_groups";
         }
     });
 };
