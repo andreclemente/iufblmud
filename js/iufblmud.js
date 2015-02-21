@@ -174,16 +174,13 @@ function responseFn(response) {
         j++;
     });
 
-    if (done) {
+    if (!done && response.paging != "undefined" && response.paging.next != "undefined"){
+        FB.api(response.paging.next, responseFn);
+    } else {
         feed.sort();
         feed.render();
 
-        $('#loading').hide();
-        return;
-    }
-
-    if (response.paging.next != "undefined"){
-        FB.api(response.paging.next, responseFn);
+        $('#loading').hide();        
     }
 }
 
