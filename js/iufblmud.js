@@ -114,7 +114,7 @@ function changeSearch(text, dst1, dst2) {
 
 window.fbAsyncInit = function () {
     FB.init({
-        appId: '145530318799386',
+        appId: '700573218339238',
         channelUrl: '//andreclemente.github.io/iufblmud/channel.html',
         version: 'v2.2',
         status: true,
