@@ -115,7 +115,7 @@ function changeSearch(text, dst1, dst2) {
 window.fbAsyncInit = function () {
     FB.init({
         appId: '145530318799386',
-        channelUrl: '//woli.github.com/iufblmud/channel.html',
+        channelUrl: '//andreclemente.github.com/iufblmud/channel.html',
         version: 'v2.2',
         status: true,
         cookie: true,
@@ -133,7 +133,7 @@ window.fbAsyncInit = function () {
             //         feed.refresh();
             //     }
             // }, { scope: 'read_stream' });
-            window.location = "https://www.facebook.com/dialog/oauth/?client_id=145530318799386&redirect_uri=http://woli.github.com/iufblmud/index.html&scope=user_groups";
+            window.location = "https://www.facebook.com/dialog/oauth/?client_id=145530318799386&redirect_uri=http://andreclemente.github.com/iufblmud/index.html&scope=user_groups";
         }
     });
 };
